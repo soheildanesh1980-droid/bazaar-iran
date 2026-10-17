@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>بازار ایران | خرید و فروش</title>
+  <meta name="description" content="بازار ایران؛ محل خرید و فروش کالا و خدمات">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Tahoma, Arial, sans-serif;
+      background: #f5f6f8;
+      color: #20252b;
+    }
+    header {
+      background: #fff;
+      padding: 16px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .top {
+      max-width: 1000px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo { font-size: 22px; font-weight: bold; color: #13865b; }
+    button {
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    .primary { background: #13865b; color: white; }
+    main { max-width: 1000px; margin: auto; padding: 18px 14px 90px; }
+    .hero {
+      background: #e1f5e9;
+      padding: 22px 18px;
+      border-radius: 16px;
+      margin-bottom: 18px;
+    }
+    h1 { font-size: 23px; margin: 0 0 10px; }
+    .hero p { line-height: 1.9; margin: 0 0 16px; }
+    .search {
+      display: flex;
+      gap: 8px;
+      margin: 18px 0;
+    }
+    input, select, textarea {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #d8dde3;
+      border-radius: 9px;
+      padding: 12px;
+      background: white;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    h2 { font-size: 19px; margin: 22px 0 14px; }
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .category {
+      background: white;
+      padding: 17px 5px;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid #eceff2;
+      cursor: pointer;
+    }
+    .category span { display: block; font-size: 24px; margin-bottom: 8px; }
+    .listings {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      border: 1px solid #eceff2;
+    }
+    .card h3 { margin: 0 0 9px; font-size: 16px; }
+    .price { color: #13865b; font-weight: bold; }
+    .city { color: #737b84; font-size: 13px; margin-top: 8px; }
+    .formbox {
+      display: none;
+      background: white;
+      padding: 16px;
+      border-radius: 14px;
+      margin-top: 20px;
+    }
+    .formbox input, .formbox textarea, .formbox select { margin-bottom: 10px; }
+    nav {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      display: flex;
+      justify-content: space-around;
+      background: white;
+      border-top: 1px solid #ddd;
+      padding: 12px 4px;
+    }
+    nav button { background: white; padding: 8px; }
+    @media (min-width: 700px) {
+      .listings { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 380px) {
+      .categories { grid-template-columns: repeat(2, 1fr); }
+      .search { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="top">
+      <div class="logo">بازار ایران</div>
+      <button class="primary" onclick="showForm()">＋ ثبت آگهی</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>چی می‌خوای پیدا کنی؟</h1>
+      <p>خرید و فروش آسان در بازار ایران</p>
+      <div class="search">
+        <input id="search" placeholder="جست‌وجوی کالا یا آگهی..." oninput="renderListings()">
+        <button class="primary" onclick="renderListings()">جست‌وجو</button>
+      </div>
+    </section>
+
+    <h2>دسته‌بندی‌ها</h2>
+    <section class="categories">
+      <button class="category" onclick="chooseCategory('همه')"><span>🛍️</span>همه آگهی‌ها</button>
+      <button class="category" onclick="chooseCategory('موبایل')"><span>📱</span>موبایل</button>
+      <button class="category" onclick="chooseCategory('خودرو')"><span>🚗</span>خودرو</button>
+      <button class="category" onclick="chooseCategory('املاک')"><span>🏠</span>املاک</button>
+      <button class="category" onclick="chooseCategory('خانه')"><span>🪑</span>خانه</button>
+      <button class="category" onclick="chooseCategory('خدمات')"><span>🛠️</span>خدمات</button>
+      <button class="category" onclick="chooseCategory('استخدام')"><span>💼</span>استخدام</button>
+      <button class="category" onclick="chooseCategory('سایر')"><span>📦</span>سایر</button>
+    </section>
+
+    <h2>آگهی‌ها</h2>
+    <section id="listings" class="listings"></section>
+
+    <section id="formbox" class="formbox">
+      <h2>ثبت آگهی جدید</h2>
+      <form id="listingForm">
+        <input id="title" placeholder="عنوان آگهی" required>
+        <select id="category" required>
+          <option value="">انتخاب دسته‌بندی</option>
+          <option>موبایل</option><option>خودرو</option><option>املاک</option>
+          <option>خانه</option><option>خدمات</option><option>استخدام</option><option>سایر</option>
+        </select>
+        <input id="price" type="number" min="0" placeholder="قیمت به تومان" required>
+        <input id="city" placeholder="شهر" required>
+        <textarea id="description" placeholder="توضیحات آگهی"></textarea>
+        <button class="primary" type="submit">ثبت آگهی آزمایشی</button>
+        <button type="button" onclick="hideForm()">انصراف</button>
+      </form>
+      <p id="notice"></p>
+    </section>
+  </main>
+
+  <nav>
+    <button onclick="window.scrollTo({top:0,behavior:'smooth'})">خانه</button>
+    <button onclick="showForm()">ثبت آگهی</button>
+    <button onclick="alert('بخش حساب کاربری در نسخه بعدی اضافه می‌شود.')">حساب من</button>
+  </nav>
+
+  <script>
+    const sampleListings = [
+      {title:'گوشی موبایل تمیز', category:'موبایل', price:8500000, city:'تهران'},
+      {title:'خودروی کم‌کارکرد', category:'خودرو', price:450000000, city:'کرج'},
+      {title:'آپارتمان برای اجاره', category:'املاک', price:12000000, city:'تهران'},
+      {title:'میز و صندلی', category:'خانه', price:2500000, city:'اصفهان'}
+    ];
+    let currentCategory = 'همه';
+    let userListings = [];
+
+    function formatPrice(price) {
+      return Number(price).toLocaleString('fa-IR') + ' تومان';
+    }
+
+    function renderListings() {
+      const q = document.getElementById('search').value.trim().toLowerCase();
+      const all = [...userListings, ...sampleListings];
+      const filtered = all.filter(item =>
+        (currentCategory === 'همه' || item.category === currentCategory) &&
+        (item.title.toLowerCase().includes(q) || item.city.toLowerCase().includes(q))
+      );
+      document.getElementById('listings').innerHTML = filtered.length
+        ? filtered.map(item => `
+          <article class="card">
+            <h3>${escapeHTML(item.title)}</h3>
+            <div class="price">${formatPrice(item.price)}</div>
+            <div class="city">${escapeHTML(item.city)} · ${escapeHTML(item.category)}</div>
+          </article>`).join('')
+        : '<p>آگهی‌ای پیدا نشد.</p>';
+    }
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[c]));
+    }
+
+    function chooseCategory(category) {
+      currentCategory = category;
+      renderListings();
+      document.getElementById('listings').scrollIntoView({behavior:'smooth'});
+    }
+
+    function showForm() {
+      document.getElementById('formbox').style.display = 'block';
+      document.getElementById('formbox').scrollIntoView({behavior:'smooth'});
+    }
+
+    function hideForm() {
+      document.getElementById('formbox').style.display = 'none';
+    }
+
+    document.getElementById('listingForm').addEventListener('submit', event => {
+      event.preventDefault();
+      userListings.unshift({
+        title: document.getElementById('title').value.trim(),
+        category: document.getElementById('category').value,
+        price: Number(document.getElementById('price').value),
+        city: document.getElementById('city').value.trim()
+      });
+      renderListings();
+      document.getElementById('notice').textContent =
+        'آگهی فقط به‌صورت آزمایشی در همین صفحه ثبت شد؛ هنوز در سرور ذخیره نمی‌شود.';
+      event.target.reset();
+    });
+
+    renderListings();
+  </script>
+</body>
+</html>
